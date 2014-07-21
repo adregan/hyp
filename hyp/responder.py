@@ -6,7 +6,7 @@ from hyp.adapters.base import adapter_for
 
 
 class Responder(object):
-    def __init__(self, type, serializer, links):
+    def __init__(self, type, serializer, links=None):
         # TODO Add a way to override the pluralized type
         self.serializer = serializer
         self.type = type
