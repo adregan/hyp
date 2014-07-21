@@ -15,7 +15,7 @@ class Responder(object):
         self.adapter = adapter_for(self.serializer)(self.serializer)
 
     def update_links(self, type, responder, href):
-        link_dict = dict("responder"=responder, "href"=href)
+        link_dict = dict(responder=responder, href=href)
         new_link = dict(type=link_dict)
         return self.links.update(new_link)
 
