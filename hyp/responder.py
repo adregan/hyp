@@ -6,10 +6,12 @@ from hyp.adapters.base import adapter_for
 
 
 class Responder(object):
-    def __init__(self):
+    def __init__(self, type, serializer, links):
         # TODO Add a way to override the pluralized type
+        self.serializer = serializer
+        self.type = type
         self.root = self.pluralized_type()
-        self.adapter = adapter_for(self.SERIALIZER)(self.SERIALIZER)
+        self.adapter = adapter_for(self.serializer)(self.serializer)
 
     def build_meta(self, meta):
         return meta
@@ -80,7 +82,7 @@ class Responder(object):
         return json.dumps(document)
 
     def pluralized_type(self):
-        return pluralize(self.TYPE)
+        return pluralize(self.type)
 
     def pick(self, instance, key):
         try:
