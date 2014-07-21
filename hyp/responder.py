@@ -6,12 +6,18 @@ from hyp.adapters.base import adapter_for
 
 
 class Responder(object):
-    def __init__(self, type, serializer, links=None):
+    def __init__(self, type, serializer, links={}):
         # TODO Add a way to override the pluralized type
-        self.serializer = serializer
         self.type = type
+        self.serializer = serializer
+        self.links = links
         self.root = self.pluralized_type()
         self.adapter = adapter_for(self.serializer)(self.serializer)
+
+    def update_links(self, type, responder, href):
+        link_dict = dict("responder": responder, "href": href)
+        new_link = dict(type=link_dict)
+        return self.links.update(new_link)
 
     def build_meta(self, meta):
         return meta
@@ -20,7 +26,7 @@ class Responder(object):
         rv = {}
 
         for link in links:
-            properties = self.LINKS[link]
+            properties = self.links[link]
             key = "%s.%s" % (self.pluralized_type(), link)
             value = {
                 'type': properties['responder'].pluralized_type(),
@@ -36,7 +42,7 @@ class Responder(object):
         rv = {}
 
         for key, instances in linked.iteritems():
-            responder = self.LINKS[key]['responder']
+            responder = self.links[key]['responder']
             rv[key] = responder.build_resources(instances)
 
         return rv
