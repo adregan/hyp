@@ -6,18 +6,13 @@ from hyp.adapters.base import adapter_for
 
 
 class Responder(object):
-    def __init__(self, type, serializer, links={}):
+    def __init__(self, type, serializer, links=None):
         # TODO Add a way to override the pluralized type
+        self.root = self.pluralized_type()
+        self.adapter = adapter_for(self.serializer)(self.serializer)
         self.type = type
         self.serializer = serializer
         self.links = links
-        self.root = self.pluralized_type()
-        self.adapter = adapter_for(self.serializer)(self.serializer)
-
-    def update_links(self, type, responder, href):
-        link_dict = dict(responder=responder, href=href)
-        new_link = dict(type=link_dict)
-        return self.links.update(new_link)
 
     def build_meta(self, meta):
         return meta
@@ -52,8 +47,8 @@ class Responder(object):
 
     def build_resource(self, instance, links):
         resource = self.adapter(instance)
-        if links is not None:
-            resource['links'] = self.build_resource_links(instance, links)
+        # if links is not None:
+        #     resource['links'] = self.build_resource_links(instance, links)
         return resource
 
     def build_resource_links(self, instance, links):
